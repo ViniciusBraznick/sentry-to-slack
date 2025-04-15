@@ -3,18 +3,24 @@ const { createServer } = require('node:http');
 const hostname = '127.0.0.1';
 const port = 3000;
 
-const server = createServer((req: any, res: any) => {
-  if(req.url !== '/webhook-sentry'){
-    res.statusCode = 404;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Not found');
-    return;
+const routes = require('./routes');
+
+const server = createServer((request: any, response: any) => {
+  const route = routes.find(({ endpoint, method }:{ endpoint: string, method: string } ) => (
+    endpoint === request.url && method === request.method
+  ));
+
+  if(route){
+
+    response.send = (statusCode: number, body: any) => {
+      response.writeHead()
+    }
+
+    route.handler(request, response);
+  } else {
+    response.writeHead(404, { 'Content-Type': 'text/html' });
+    response.end('Cannot')
   }
-
-
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Teste');
 });
 
 server.listen(port, hostname, () => {
