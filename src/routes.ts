@@ -3,7 +3,7 @@ const SlackController = require('./controllers/SlackController');
 module.exports = [
   {
     endpoint: '/sentry-error',
-    method: 'GET',
+    method: 'POST',
     handler: SlackController.sendMessage,
   },
 ]
